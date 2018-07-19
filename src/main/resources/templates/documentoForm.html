@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title th:if="${id == null}">Agregar documento</title>
+	<title th:if="${id != null}">Editar documento</title>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"></link>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+</head>
+<body>
+<script type="text/javascript">
+$( document ).ready(function() {
+	document.getElementById("file").required = true;
+});
+
+</script>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<strong th:if="${id == null}">Agregar Documento</strong>
+			<strong th:if="${id != null}">Editar Documento</strong>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal" th:object="${documento}" th:action="@{/save}" enctype="multipart/form-data" method="POST" style="margin: 10px">
+				<div class="form-group">
+ 					<fieldset>
+							
+						<div class="form-group row" th:if="${id != null}">
+						    <div class="col-md-4" >
+						    	
+						        <input type="text" hidden="true" name="id" th:field="*{id}" readOnly="readonly"/>
+						        <label>Nombre</label>
+						        <input type="text" class="form-control input-sm" name="nombreArchivo" th:field="*{nombreArchivo}" readOnly="readonly" />
+						    </div>
+						 </div>
+						 <div class="form-group row" th:if="${id == null}">
+						    <div class="col-md-4" >
+						    	<label>File to upload:</label>
+						        <input type="file" name="file" id="file" />
+						    </div>
+						 </div>
+						 <div class="form-group row">                                                          
+							<div class="col-md-4">
+							    <label>Tipo de Documento</label>
+							    <select name="tipoDocumento" id="tipoDocumento">
+			                         <option th:each="tipoDocumento : ${tiposDocumento}"
+			                            th:value="${tipoDocumento.id}"
+			                            th:utext="${tipoDocumento.descripcion}"
+			                            th:selected="${tipoDocumento.id == documento.tipoDocumento.id}" th:if="${id != null}">
+			                            <option th:each="tipoDocumento : ${tiposDocumento}"
+			                            th:value="${tipoDocumento.id}"
+			                            th:utext="${tipoDocumento.descripcion}" th:if="${id == null}">
+                				  </select>
+							   
+							</div>
+						</div>
+						<div class="form-group row">                                                          
+							<div class="col-md-4">
+							    <label>Owner</label>
+							    <select name="owner" id="owner">
+			                         <option th:each="usuario : ${usuarios}"
+			                            th:value="${usuario.id}"
+			                            th:utext="${usuario.nombre}"
+			                            th:selected="${usuario.id == documento.owner.id}" th:if="${id != null}">
+			                         <option th:each="usuario : ${usuarios}"
+			                            th:value="${usuario.id}"
+			                            th:utext="${usuario.nombre}" th:if="${id == null}">
+                				  </select>
+							    
+							</div>
+						</div> 
+						<div class="form-group row">
+							 <div class="col-md-4" th:classappend="${#fields.hasErrors('descripcion')}? 'has-error'">
+								<label>Descripcion</label> 
+								<input type="text" class="form-control input-sm" th:field="*{descripcion}" maxlength="150" placeholder="Especifique la descripcion"/>
+							</div>
+						</div>
+											
+					</fieldset>
+				</div>
+				<div class="form-group row">
+					<button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+					<a th:href="@{/}" class="btn btn-sm btn-default">Cancelar</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
